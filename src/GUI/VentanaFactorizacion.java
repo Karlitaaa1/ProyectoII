@@ -18,11 +18,11 @@ public class VentanaFactorizacion extends VentanaOperaciones {
     public VentanaFactorizacion() {
         super("DESCOMPOSICION FACTORIAL");
         JLabel lblNumero = new JLabel("Ingrese un número para su descomposicion factorial:");
-        lblNumero.setBounds(30, 50, 3000, 30);
+        lblNumero.setBounds(30, 50, 350, 30);
         panelContenido.add(lblNumero);
         
         JTextField txtNumero = new JTextField();
-        txtNumero.setBounds(310, 50, 150, 30);
+        txtNumero.setBounds(340, 50, 150, 30);
         panelContenido.add(txtNumero);
         JButton btnCalcular = new JButton("Calcular");
         btnCalcular.setBounds(500, 50, 100, 30);
