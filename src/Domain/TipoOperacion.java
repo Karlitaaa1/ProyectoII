@@ -8,6 +8,13 @@ package Domain;
  *
  * @author kbren
  */
+
 public class TipoOperacion {
     
+    public void factorial() {}
+    public void primos() {}
+    public void descompFactorial() {}
+    public void potencias() {}
+    public void Fibonacci() {}
+    public void matrices() {}
 }
