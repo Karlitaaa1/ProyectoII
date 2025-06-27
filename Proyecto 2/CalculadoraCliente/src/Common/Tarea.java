@@ -20,22 +20,29 @@ import java.util.Map; // Usaremos un mapa para los parámetros
 
 
 public class Tarea implements Serializable {
-
+    // CAMPOS AÑADIDOS
     private String idCliente;
+    private String estado;
+    
+    // Campos que ya tenías
     private TipoOperacion tipoOperacion;
     private Map<String, String> parametros;
-    private Resultado resultado; // Referencia a la clase separada
-
-    // Constructor vacío 
+    private Resultado resultado;
+    
     public Tarea() {}
 
-    // --- Getters y Setters ---
     public String getIdCliente() { return idCliente; }
     public void setIdCliente(String idCliente) { this.idCliente = idCliente; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    
     public TipoOperacion getTipoOperacion() { return tipoOperacion; }
     public void setTipoOperacion(TipoOperacion tipoOperacion) { this.tipoOperacion = tipoOperacion; }
+    
     public Map<String, String> getParametros() { return parametros; }
     public void setParametros(Map<String, String> parametros) { this.parametros = parametros; }
+    
     public Resultado getResultado() { return resultado; }
     public void setResultado(Resultado resultado) { this.resultado = resultado; }
 }
