@@ -7,7 +7,7 @@ package Domain;
  *
  * @author kbren
  */
-public class Tarea {
+public class Tarea extends Thread { 
     private String IdCliente;
     private TipoOperacion tipoOperacion;
     private Object parametros;
