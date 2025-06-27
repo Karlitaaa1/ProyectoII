@@ -4,8 +4,8 @@
  */
 package Gestor;
 
-import Domain.Tarea;
-import Domain.Tarea.Resultado;
+import Common.Resultado;
+import Common.Tarea;
 import java.net.Socket;
 
 /**
