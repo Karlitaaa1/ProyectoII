@@ -18,25 +18,32 @@ import java.util.Map;
  * No utiliza JAXB.
  */
 public class XMLUtility {
-    
-    
-    /* Convierte un objeto Tarea COMPLETO a una cadena de texto XML.
+
+    // =================================================================
+    // MÉTODO RENOMBRADO Y CORREGIDO
+    // =================================================================
+    /**
+     * Convierte un objeto Tarea COMPLETO a una cadena de texto XML.
      * @param tarea El objeto Tarea a convertir.
      * @return Una cadena formateada en XML.
      */
-    public static String toXML(Tarea tarea) {
+    public static String tareaToXML(Tarea tarea) {
         if (tarea == null) return "";
 
         StringBuilder xml = new StringBuilder();
         xml.append("<tarea>\n");
-        
-        // Añadir todos los campos de la Tarea
+
+        // --- SECCIÓN CORREGIDA ---
+        // Usar getId() para el campo <id>
         if (tarea.getIdCliente()!= null) {
             xml.append("  <id>").append(tarea.getIdCliente()).append("</id>\n");
         }
+        // Usar getIdCliente() para el campo <idCliente>
         if (tarea.getIdCliente() != null) {
             xml.append("  <idCliente>").append(tarea.getIdCliente()).append("</idCliente>\n");
         }
+        // -------------------------
+
         if (tarea.getEstado() != null) {
             xml.append("  <estado>").append(tarea.getEstado()).append("</estado>\n");
         }
@@ -44,7 +51,7 @@ public class XMLUtility {
             xml.append("  <tipoOperacion>").append(tarea.getTipoOperacion()).append("</tipoOperacion>\n");
         }
         
-        // Añadir parámetros
+        // Añadir parámetros (código sin cambios)
         if (tarea.getParametros() != null && !tarea.getParametros().isEmpty()) {
             xml.append("  <parametros>\n");
             for (Map.Entry<String, String> entry : tarea.getParametros().entrySet()) {
@@ -58,14 +65,33 @@ public class XMLUtility {
         
         // Añadir resultado si existe
         if (tarea.getResultado() != null) {
-            // Reutilizamos el otro método toXML para no repetir código
-            xml.append(toXML(tarea.getResultado())); 
+            // Llamamos al otro método con el nombre nuevo
+            xml.append(resultadoToXML(tarea.getResultado()));
         }
 
         xml.append("</tarea>");
         return xml.toString();
     }
     
+    // =================================================================
+    // MÉTODO RENOMBRADO
+    // =================================================================
+    /**
+     * Convierte un objeto Resultado a una cadena de texto XML.
+     * @param resultado El objeto Resultado a convertir.
+     * @return Una cadena formateada en XML.
+     */
+    public static String resultadoToXML(Resultado resultado) {
+        if (resultado == null) return "";
+        
+        StringBuilder xml = new StringBuilder();
+        xml.append("  <resultado>\n"); 
+        xml.append("    <exito>").append(resultado.isExito()).append("</exito>\n");
+        xml.append("    <mensaje>").append(resultado.getMensaje()).append("</mensaje>\n");
+        xml.append("    <datos><![CDATA[").append(resultado.getDatos()).append("]]></datos>\n");
+        xml.append("  </resultado>\n");
+        return xml.toString();
+    }
 
     /**
      * Convierte un objeto Tarea a una cadena de texto XML.
