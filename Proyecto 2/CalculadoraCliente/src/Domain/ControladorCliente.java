@@ -6,7 +6,10 @@ package Domain;
 
 import Common.Resultado;
 import Common.Tarea;
+import Common.TipoOperacion;
 import Gestor.GestorConexion;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

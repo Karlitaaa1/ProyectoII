@@ -4,6 +4,12 @@
  */
 package GUI;
 
+import Common.Tarea;
+import Common.TipoOperacion;
+import Common.XMLUtility;
+import Domain.ConexionClienteSocket;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 
 /**
@@ -11,13 +17,17 @@ import javax.swing.*;
  * @author karla
  */
 public class VentanaPrimos extends VentanaOperaciones {
-    public VentanaPrimos() {
+
+    private String usuario;
+
+    public VentanaPrimos(String usuario) {
         super("BUSQUEDA DE NUMEROS PRIMOS EN UN RANGO");
-        
+        this.usuario = usuario;
+
         JLabel lblInstruccion = new JLabel("Ingrese el rango de números para buscar primos:");
         lblInstruccion.setBounds(30, 50, 400, 30);
         panelContenido.add(lblInstruccion);
-        
+
         JTextField txtInicial = new JTextField();
         txtInicial.setBounds(430, 50, 100, 30);
         panelContenido.add(txtInicial);
@@ -42,14 +52,41 @@ public class VentanaPrimos extends VentanaOperaciones {
         JScrollPane scroll = new JScrollPane(txtResultado);
         scroll.setBounds(30, 110, 740, 290);
         panelContenido.add(scroll);
-        
-        
+
         btnCalcular.addActionListener(e -> {
+            String inicio = txtInicial.getText().trim();
+            String fin = txtFinal.getText().trim();
+            if (inicio.isEmpty() || fin.isEmpty()) {
+                txtResultado.setText("Por favor, ingrese ambos valores del rango.");
+                return;
+            }
+
             try {
-                txtResultado.setText("aca va el resultado");
+                Integer.parseInt(inicio);
+                Integer.parseInt(fin);
+
+                Map<String, String> parametros = new HashMap<>();
+                parametros.put("inicio", inicio);
+                parametros.put("fin", fin);
+
+                Tarea tarea = new Tarea();
+                tarea.setIdCliente(usuario);
+                tarea.setTipoOperacion(TipoOperacion.BUSQUEDA_PRIMOS);
+                tarea.setParametros(parametros);
+
+                String xml = XMLUtility.toXML(tarea);
+                ConexionClienteSocket cliente = new ConexionClienteSocket("localhost", 9090); // CAMBIAR ACA
+                cliente.enviarMensaje(xml);
+                String respuesta = cliente.recibirRespuesta();
+                cliente.cerrar();
+                txtResultado.setText("Respuesta del servidor:\n" + respuesta);
+
             } catch (NumberFormatException ex) {
-                txtResultado.setText("Por favor, ingrese un número válido.");
+                txtResultado.setText("Por favor, ingrese números válidos.");
+            } catch (Exception ex) {
+                txtResultado.setText("Error al conectar con el servidor:\n" + ex.getMessage());
             }
         });
-    }   
+
+    }
 }

@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Gestor.GestorConexion;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -14,9 +15,13 @@ import javax.swing.*;
  */
 public class VentanaPrincipal extends JFrame {
 
+    private String usuario;
+    private GestorConexion gestor;
     private Image backgroundImage;
 
-    public VentanaPrincipal() {
+    public VentanaPrincipal(String usuario, GestorConexion gestor) {
+        this.usuario = usuario;
+        this.gestor = gestor; // para enviar tareas luego
         setTitle("Calculadora Computacional Distribuida");
         setSize(900, 500);
         setLocationRelativeTo(null);
@@ -73,29 +78,31 @@ public class VentanaPrincipal extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     switch (finalI) {
-                        case 0 ->
-                            new GUI.VentanaFactorial().setVisible(true);
-                        case 1 ->
-                            new GUI.VentanaPrimos().setVisible(true);
-                        case 2 ->
-                            new GUI.VentanaFactorizacion().setVisible(true);
-                        case 3 ->
-                            new GUI.VentanaPotencias().setVisible(true);
-                        case 4 ->
-                            new GUI.VentanaFibonacci().setVisible(true);
-                        case 5 ->
-                            new GUI.VentanaMatrices().setVisible(true);
+                        case 0: new GUI.VentanaFactorial(usuario).setVisible(true); break;
+                        case 1: new GUI.VentanaPrimos(usuario).setVisible(true);break;
+                        case 2:new GUI.VentanaFactorizacion(usuario).setVisible(true);break;
+                        case 3:new GUI.VentanaPotencias(usuario).setVisible(true);break;
+                        case 4:new GUI.VentanaFibonacci(usuario).setVisible(true); break;
+                        case 5:new GUI.VentanaMatrices(usuario).setVisible(true);break;
                     }
                 }
             });
             panelFondo.add(boton);
         }
 
-        JLabel lblCreditos = new JLabel("II PROYECTO PROGRAMACION 2025 | KARLA BRENES KEVIN BRENES", SwingConstants.RIGHT);
-        lblCreditos.setFont(new Font("Verdana", Font.PLAIN, 10));
-        lblCreditos.setForeground(Color.LIGHT_GRAY);
-        lblCreditos.setBounds(420, 420, 450, 15);
-        panelFondo.add(lblCreditos);
+        JButton btnEstado = new JButton("VER ESTADO DE LAS SOLICITUDES");
+        btnEstado.setForeground(new Color(32, 35, 122));
+        btnEstado.setBackground(Color.WHITE);
+        btnEstado.setFocusPainted(false);
+        btnEstado.setBounds(350, 400, 250, 30);
+        btnEstado.addActionListener(e -> new VentanaConsultaEstado(usuario).setVisible(true));
+        panelFondo.add(btnEstado);
+
+        JLabel lblProyecto = new JLabel("II PROYECTO PROGRAMACION 2025 | KARLA BRENES KEVIN BRENES", SwingConstants.RIGHT);
+        lblProyecto.setFont(new Font("Verdana", Font.PLAIN, 10));
+        lblProyecto.setForeground(Color.LIGHT_GRAY);
+        lblProyecto.setBounds(420, 445, 450, 15);
+        panelFondo.add(lblProyecto);
 
         setContentPane(panelFondo);
     }

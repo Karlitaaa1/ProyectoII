@@ -18,12 +18,8 @@ import java.net.UnknownHostException;
  *
  * @author kbren
  */
-/**
- * Gestiona la comunicación de bajo nivel (sockets y streams) con el servidor.
- * Es el único que sabe cómo enviar y recibir datos por la red.
- */
-public class GestorConexion {
-
+public class GestorConexion { //Gestiona la comunicación de bajo nivel (sockets y streams) con el servidor.
+    //Es el único que sabe cómo enviar y recibir datos por la red.
     private final String host;
     private final int puerto;
     private Socket socket;
@@ -35,56 +31,37 @@ public class GestorConexion {
         this.puerto = puerto;
     }
 
-    /**
-     * Intenta establecer una conexión con el servidor y realiza el handshake.
-     * @throws IOException si ocurre un error de red.
-     * @throws UnknownHostException si no se puede encontrar el host.
-     */
-    public void conectar() throws IOException, UnknownHostException {
+    public void conectar() throws IOException, UnknownHostException { //Intenta establecer una conexión con el servidor y realiza el handshake.
         socket = new Socket(host, puerto);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        
-        // El cliente se presenta al servidor.
-        out.println("<handshake><tipo>CLIENTE</tipo></handshake>");
-        System.out.println("GESTOR: Conexión establecida y handshake enviado.");
+        out.println("<handshake><tipo>CLIENTE</tipo></handshake>"); // El cliente se presenta al servidor.
+//        System.out.println("GESTOR: Conexion establecida y handshake enviado.");
     }
 
-    /**
-     * Envía una Tarea serializada como XML al servidor.
-     * @param tarea La tarea a enviar.
-     */
-    public void enviarTareaXML(Tarea tarea) {
-        String xmlTarea = XMLUtility.tareaToXML(tarea);
+    public void enviarTareaXML(Tarea tarea) { //Envía una Tarea serializada como XML al servidor.
+        String xmlTarea = XMLUtility.toXML(tarea); //Tarea=La tarea a enviar.
         out.println(xmlTarea);
         System.out.println("GESTOR: Tarea XML enviada al servidor.");
     }
 
-    /**
-     * Espera y lee la respuesta del servidor (confirmación).
-     * @return El objeto Resultado deserializado desde el XML de respuesta.
-     * @throws IOException si la conexión se pierde mientras se espera.
-     */
-    public Resultado recibirConfirmacion() throws IOException {
+    public Resultado recibirConfirmacion() throws IOException { //Espera y lee la respuesta del servidor (confirmación).
         String xmlRespuesta = in.readLine();
         if (xmlRespuesta == null) {
-            throw new IOException("La conexión fue cerrada por el servidor antes de recibir respuesta.");
+            throw new IOException("La conexion fue cerrada por el servidor antes de recibir respuesta.");
         }
         System.out.println("GESTOR: Confirmación XML recibida.");
-        return XMLUtility.fromXML(xmlRespuesta, Resultado.class); // Usamos el método de utilidad
+        return XMLUtility.resultadoFromXML(xmlRespuesta); //El objeto Resultado deserializado desde el XML de respuesta.
     }
 
-    /**
-     * Cierra todos los recursos de red de forma segura.
-     */
-    public void desconectar() {
+    public void desconectar() { //Cierra todos los recursos de red de forma segura.
         try {
             if (in != null) in.close();
             if (out != null) out.close();
             if (socket != null) socket.close();
-            System.out.println("GESTOR: Conexión cerrada.");
+            System.out.println("GESTOR: Conexion cerrada.");
         } catch (IOException e) {
-            System.err.println("GESTOR: Error al cerrar la conexión: " + e.getMessage());
+            System.err.println("GESTOR: Error al cerrar la conexion: " + e.getMessage());
         }
     }
 }

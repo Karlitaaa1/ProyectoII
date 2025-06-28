@@ -4,21 +4,25 @@
  */
 package GUI;
 
+import Common.Tarea;
+import Common.TipoOperacion;
+import Common.XMLUtility;
+import Domain.ConexionClienteSocket;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 
 /**
  *
  * @author karla
  */
-
 public class VentanaFactorial extends VentanaOperaciones {
+    private String usuario;
 
-    public VentanaFactorial() {
+    public VentanaFactorial(String usuario) {
         super("CÁLCULO DEL FACTORIAL DE UN NÚMERO GRANDE (N!)");
-        
-        //ACA ESTA LA LOGICA DE LA OPERACION SOLO PARA VER EL FUNCIIONAMIENTO, PERO ESTO NO SE HACE ACA
-        //DESPUES TENEMOS QUE CAMBIARLO PORQUE NO PUEDE QUEDAR ACA
-        //ACA SOLO VA LA INTERFAZ GRAFICA
+        this.usuario = usuario;
 
         JLabel lblNumero = new JLabel("Ingrese un número:");
         lblNumero.setBounds(30, 50, 200, 30);
@@ -40,16 +44,39 @@ public class VentanaFactorial extends VentanaOperaciones {
         panelContenido.add(scroll);
 
         btnCalcular.addActionListener(e -> {
-            try {
-                int n = Integer.parseInt(txtNumero.getText());
-                java.math.BigInteger resultado = factorial(n);
-                txtResultado.setText(n + "! =\n" + resultado.toString());
-            } catch (NumberFormatException ex) {
+            String numeroTexto = txtNumero.getText().trim();
+            if (numeroTexto.isEmpty()) {
                 txtResultado.setText("Por favor, ingrese un número válido.");
+                return;
             }
-        });
-    }
 
+            try {
+                Map<String, String> parametros = new HashMap<>();
+                parametros.put("numero", numeroTexto);
+                // CREAR TAREA
+                Tarea tarea = new Tarea();
+                tarea.setIdCliente(usuario);
+                tarea.setTipoOperacion(TipoOperacion.FACTORIAL);
+                tarea.setParametros(parametros);
+
+                // CONVERTIR A XML Y ENVIAR
+                String xml = XMLUtility.toXML(tarea);
+                ConexionClienteSocket cliente = new ConexionClienteSocket("localhost", 9090);
+                cliente.enviarMensaje(xml);
+                String respuesta = cliente.recibirRespuesta();
+                cliente.cerrar();
+
+                txtResultado.setText("Respuesta del servidor:\n" + respuesta);
+            } catch (Exception ex) {
+                txtResultado.setText("Error: " + ex.getMessage());
+            }
+        });     
+    }
+    
+    
+    //ACA ESTA LA LOGICA DE LA OPERACION SOLO PARA VER EL FUNCIIONAMIENTO, PERO ESTO NO SE HACE ACA
+        //DESPUES TENEMOS QUE CAMBIARLO PORQUE NO PUEDE QUEDAR ACA
+        //ACA SOLO VA LA INTERFAZ GRAFICA
     private java.math.BigInteger factorial(int n) {
         java.math.BigInteger result = java.math.BigInteger.ONE;
         for (int i = 2; i <= n; i++) {
