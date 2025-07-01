@@ -8,6 +8,7 @@ import Common.Tarea;
 import Common.TipoOperacion;
 import Common.XMLUtility;
 import Domain.ConexionClienteSocket;
+import Domain.ControladorCliente;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
@@ -18,11 +19,12 @@ import java.util.Map;
  * @author karla
  */
 public class VentanaConsultaEstado extends JFrame {
-
     private String usuario;
+    private ControladorCliente controlador;
 
-    public VentanaConsultaEstado(String usuario) {
+    public VentanaConsultaEstado(String usuario, ControladorCliente controlador) {
         this.usuario = usuario;
+        this.controlador = controlador;
 
         setTitle("Estado de solicitudes");
         setSize(600, 400);
@@ -34,7 +36,11 @@ public class VentanaConsultaEstado extends JFrame {
         txtResultados.setEditable(false);
         JScrollPane scroll = new JScrollPane(txtResultados);
 
-        JButton btnConsultar = new JButton("Consultar Estado");
+        JButton btnConsultar = new JButton("CONSULTAR ESTADO");
+        btnConsultar.setBackground(new Color(32, 35, 122));
+        btnConsultar.setForeground(Color.WHITE);
+        btnConsultar.setFont(new Font("Malgun Gothic", Font.BOLD, 12));
+        add(btnConsultar, BorderLayout.NORTH);
 
         btnConsultar.addActionListener(e -> {
             try {
@@ -57,8 +63,6 @@ public class VentanaConsultaEstado extends JFrame {
                 txtResultados.setText("Error: " + ex.getMessage());
             }
         });
-
-        add(btnConsultar, BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
     }
 

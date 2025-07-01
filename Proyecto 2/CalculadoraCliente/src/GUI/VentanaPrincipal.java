@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Domain.ControladorCliente;
 import Gestor.GestorConexion;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,14 +15,13 @@ import javax.swing.*;
  * @author karla
  */
 public class VentanaPrincipal extends JFrame {
-
     private String usuario;
-    private GestorConexion gestor;
+    private ControladorCliente controlador;
     private Image backgroundImage;
 
-    public VentanaPrincipal(String usuario, GestorConexion gestor) {
+    public VentanaPrincipal(String usuario, ControladorCliente controlador) {
         this.usuario = usuario;
-        this.gestor = gestor; // para enviar tareas luego
+        this.controlador = controlador;
         setTitle("Calculadora Computacional Distribuida");
         setSize(900, 500);
         setLocationRelativeTo(null);
@@ -38,52 +38,46 @@ public class VentanaPrincipal extends JFrame {
         };
         panelFondo.setLayout(null);
 
-        Font tituloFont = new Font("Verdana", Font.BOLD, 24);
-        Font botonFont = new Font("Verdana", Font.PLAIN, 14);
-
         JLabel lblTitulo = new JLabel("CALCULADORA", SwingConstants.CENTER);
-        lblTitulo.setFont(tituloFont);
+        lblTitulo.setFont (new Font("Malgun Gothic", Font.BOLD, 24));
         lblTitulo.setForeground(Color.WHITE);
         lblTitulo.setBounds(0, 30, 900, 30);
         panelFondo.add(lblTitulo);
 
         JLabel lblSubtitulo = new JLabel("COMPUTACIONAL DISTRIBUIDA", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Verdana", Font.BOLD, 16));
+        lblSubtitulo.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
         lblSubtitulo.setForeground(Color.WHITE);
         lblSubtitulo.setBounds(0, 60, 900, 20);
         panelFondo.add(lblSubtitulo);
 
         String[] textos = {
-            "CÁLCULO DEL\nFACTORIAL DE UN\nNÚMERO GRANDE (N!)",
+            "CÁLCULO DEL FACTORIAL \n DE UN NÚMERO GRANDE (N!)",
             "BÚSQUEDA DE NÚMEROS\nPRIMOS EN UN RANGO",
             "DESCOMPOSICIÓN\nFACTORIAL",
             "CÁLCULO DE POTENCIAS\nDE NÚMEROS GRANDES",
             "SERIE DE FIBONACCI\nHASTA NÚMERO N",
             "PRODUCTO DE\nMATRICES GRANDES"
         };
-
-        int x1 = 180, x2 = 480;
-        int y = 120;
-        int width = 240, height = 70;
-        int spacingY = 85;
-
+        
         for (int i = 0; i < textos.length; i++) {
             JButton boton = new JButton("<html><center>" + textos[i].replace("\n", "<br>") + "</center></html>");
-            boton.setFont(botonFont);
+            boton.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
+            boton.setForeground(new Color(32, 35, 122));
             boton.setFocusPainted(false);
             boton.setBackground(Color.WHITE);
-            boton.setBounds((i % 2 == 0 ? x1 : x2), y + (i / 2) * spacingY, width, height);
+            boton.setBounds((i % 2 == 0 ? 180 : 480), 120 + (i / 2) * 85, 240, 70);
             int finalI = i;
+            
             boton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     switch (finalI) {
-                        case 0: new GUI.VentanaFactorial(usuario).setVisible(true); break;
-                        case 1: new GUI.VentanaPrimos(usuario).setVisible(true);break;
-                        case 2:new GUI.VentanaFactorizacion(usuario).setVisible(true);break;
-                        case 3:new GUI.VentanaPotencias(usuario).setVisible(true);break;
-                        case 4:new GUI.VentanaFibonacci(usuario).setVisible(true); break;
-                        case 5:new GUI.VentanaMatrices(usuario).setVisible(true);break;
+                        case 0: new GUI.VentanaFactorial(usuario, controlador).setVisible(true); break;
+                        case 1: new GUI.VentanaPrimos(usuario, controlador).setVisible(true);break;
+                        case 2:new GUI.VentanaFactorizacion(usuario, controlador).setVisible(true);break;
+                        case 3:new GUI.VentanaPotencias(usuario, controlador).setVisible(true);break;
+                        case 4:new GUI.VentanaFibonacci(usuario, controlador).setVisible(true); break;
+                        case 5:new GUI.VentanaMatrices(usuario, controlador).setVisible(true);break;
                     }
                 }
             });
@@ -95,11 +89,11 @@ public class VentanaPrincipal extends JFrame {
         btnEstado.setBackground(Color.WHITE);
         btnEstado.setFocusPainted(false);
         btnEstado.setBounds(350, 400, 250, 30);
-        btnEstado.addActionListener(e -> new VentanaConsultaEstado(usuario).setVisible(true));
+        btnEstado.addActionListener(e -> new VentanaConsultaEstado(usuario, controlador).setVisible(true));
         panelFondo.add(btnEstado);
 
         JLabel lblProyecto = new JLabel("II PROYECTO PROGRAMACION 2025 | KARLA BRENES KEVIN BRENES", SwingConstants.RIGHT);
-        lblProyecto.setFont(new Font("Verdana", Font.PLAIN, 10));
+        lblProyecto.setFont(new Font("Malgun Gothic", Font.PLAIN, 10));
         lblProyecto.setForeground(Color.LIGHT_GRAY);
         lblProyecto.setBounds(420, 445, 450, 15);
         panelFondo.add(lblProyecto);

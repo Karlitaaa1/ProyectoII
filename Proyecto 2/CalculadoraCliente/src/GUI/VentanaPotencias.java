@@ -4,12 +4,14 @@
  */
 package GUI;
 
+import Common.Resultado;
 import Common.Tarea;
 import Common.TipoOperacion;
-import Common.XMLUtility;
-import Domain.ConexionClienteSocket;
-import java.util.HashMap;
-import java.util.Map;
+import Domain.ControladorCliente;
+import Gestor.GestorConexion;
+import java.awt.*;
+import java.math.BigDecimal;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -17,73 +19,76 @@ import javax.swing.*;
  * @author karla
  */
 public class VentanaPotencias extends VentanaOperaciones {
-
     private String usuario;
-
-    public VentanaPotencias(String usuario) {
+    private ControladorCliente controlador; 
+    
+    public VentanaPotencias(String usuario, ControladorCliente controlador) {
         super("CALCULO DE POTENCIAS");
         this.usuario = usuario;
+        this.controlador = controlador; // Guardar la referencia
 
-        JLabel lblInstruccion = new JLabel("Ingrese la base y el exponente para calcular la potencia:");
-        lblInstruccion.setBounds(30, 50, 400, 30);
-        panelContenido.add(lblInstruccion);
+        JLabel lblBase = new JLabel("Base:");
+        lblBase.setBounds(30, 50, 100, 30);
+        lblBase.setFont(new Font("Malgun Gothic", Font.PLAIN, 15));
+        lblBase.setForeground(new Color(32, 35, 122));
+        panelContenido.add(lblBase);
 
-        JTextField txtbase = new JTextField();
-        txtbase.setBounds(430, 50, 100, 30);
-        panelContenido.add(txtbase);
-        JLabel lblInicial = new JLabel("base");
-        lblInicial.setBounds(430, 80, 100, 20);
-        panelContenido.add(lblInicial);
+        JTextField txtBase = new JTextField();
+        txtBase.setBounds(90, 50, 150, 30);
+        txtBase.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
+        panelContenido.add(txtBase);
+
+        JLabel lblExponente = new JLabel("Exponente:");
+        lblExponente.setBounds(260, 50, 100, 30);
+        lblExponente.setFont(new Font("Malgun Gothic", Font.PLAIN, 15));
+        lblExponente.setForeground(new Color(32, 35, 122));
+        panelContenido.add(lblExponente);
 
         JTextField txtExp = new JTextField();
-        txtExp.setBounds(540, 50, 100, 30);
+        txtExp.setBounds(360, 50, 150, 30);
+        txtExp.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
         panelContenido.add(txtExp);
-        JLabel lblFinal = new JLabel("exponente");
-        lblFinal.setBounds(540, 80, 100, 20);
-        panelContenido.add(lblFinal);
 
-        JButton btnCalcular = new JButton("Calcular");
-        btnCalcular.setBounds(660, 50, 100, 30);
+        JButton btnCalcular = new JButton("CALCULAR");
+        btnCalcular.setBounds(530, 50, 120, 30);
+        btnCalcular.setBackground(new Color(32, 35, 122));
+        btnCalcular.setForeground(Color.WHITE);
+        btnCalcular.setFont(new Font("Malgun Gothic", Font.BOLD, 12));
         panelContenido.add(btnCalcular);
 
         JTextArea txtResultado = new JTextArea();
         txtResultado.setLineWrap(true);
         txtResultado.setWrapStyleWord(true);
+        txtResultado.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
         JScrollPane scroll = new JScrollPane(txtResultado);
-        scroll.setBounds(30, 110, 740, 290);
+        scroll.setBounds(30, 100, 740, 300);
         panelContenido.add(scroll);
 
         btnCalcular.addActionListener(e -> {
-            String base = txtbase.getText().trim();
-            String exp = txtExp.getText().trim();
-            if (base.isEmpty() || exp.isEmpty()) {
+            String baseTexto = txtBase.getText().trim();
+            String expTexto = txtExp.getText().trim();
+
+            if (baseTexto.isEmpty() || expTexto.isEmpty()) {
                 txtResultado.setText("Por favor, ingrese ambos valores.");
                 return;
             }
-
             try {
-                Integer.parseInt(base);
-                Integer.parseInt(exp);
-                Map<String, String> parametros = new HashMap<>();
-                parametros.put("base", base);
-                parametros.put("exponente", exp);
-
-                Tarea tarea = new Tarea();
-                tarea.setIdCliente(usuario);
-                tarea.setTipoOperacion(TipoOperacion.POTENCIA);
-                tarea.setParametros(parametros);
-
-                String xml = XMLUtility.toXML(tarea);
-                ConexionClienteSocket cliente = new ConexionClienteSocket("localhost", 9090); // CAMBIAR ACA
-                cliente.enviarMensaje(xml);
-                String respuesta = cliente.recibirRespuesta();
-                cliente.cerrar();
-                txtResultado.setText("Respuesta del servidor:\n" + respuesta);
+                int exponente = Integer.parseInt(expTexto);
+                Resultado resultado = controlador.solicitarPotencia(usuario, baseTexto, exponente);
+                if (resultado != null && resultado.isExito()) {
+                    txtResultado.setText("Solicitud enviada con éxito.\n"
+                            + "Mensaje del servidor: " + resultado.getMensaje() + "\n\n"
+                            + "ID de la Tarea: " + resultado.getDatos());
+                } else {
+                    String mensajeError = (resultado != null) ? resultado.getMensaje() : "Respuesta nula del servidor.";
+                    txtResultado.setText("Error al enviar la solicitud:\n" + mensajeError);
+                }
 
             } catch (NumberFormatException ex) {
-                txtResultado.setText("Por favor, ingrese números válidos.");
+                txtResultado.setText("Error: El exponente debe ser un número entero válido.");
             } catch (Exception ex) {
-                txtResultado.setText("Error al conectar con el servidor:\n" + ex.getMessage());
+                txtResultado.setText("Error inesperado en el cliente: " + ex.getMessage());
+                ex.printStackTrace();
             }
         });
 

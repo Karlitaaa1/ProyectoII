@@ -4,6 +4,9 @@
  */
 package Common;
 
+import Common.Resultado;
+import Common.Tarea;
+import Common.TipoOperacion;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +24,25 @@ import org.jdom.output.XMLOutputter;
 public class XMLUtility { //Clase de utilidad para XML usando JDOM.
 
     public static String toXML(Tarea tarea) {
+        if (tarea == null) {
+            System.err.println("[XMLUtility] Error: Tarea es nula.");
+            return null;
+        }
+
+        boolean estaVacia = tarea.getIdCliente() == null && tarea.getEstado() == null
+                && tarea.getTipoOperacion() == null && (tarea.getParametros() == null || tarea.getParametros().isEmpty())
+                && tarea.getResultado() == null; // Verifica si no tiene campos útiles
+
+        if (estaVacia) {
+            System.err.println("[XMLUtility] Advertencia: Tarea sin contenido útil.");
+            return null;
+        }
+
         try {
             Element root = new Element("tarea");
+            if (tarea.getId() != 0) {
+            root.addContent(new Element("id").setText(String.valueOf(tarea.getId())));
+        }
             if (tarea.getIdCliente() != null) {
                 root.addContent(new Element("idCliente").setText(String.valueOf(tarea.getIdCliente())));
             }
@@ -51,6 +71,7 @@ public class XMLUtility { //Clase de utilidad para XML usando JDOM.
             e.printStackTrace();
             return null;
         }
+
     }
 
     public static String toXML(Resultado resultado) {
@@ -69,6 +90,15 @@ public class XMLUtility { //Clase de utilidad para XML usando JDOM.
             Document doc = builder.build(new StringReader(xmlString));
             Element root = doc.getRootElement();
             Tarea tarea = new Tarea();
+            String idTexto = root.getChildText("id");
+if (idTexto != null) {
+    try {
+        tarea.setId(Integer.parseInt(idTexto));
+    } catch (NumberFormatException e) {
+        System.err.println("[XMLUtility] Advertencia: id no es un numero valido: " + idTexto);
+    }
+}
+
 
             String idCliente = root.getChildText("idCliente");
             if (idCliente != null) {
@@ -105,22 +135,29 @@ public class XMLUtility { //Clase de utilidad para XML usando JDOM.
         }
     }
 
-    public static Resultado resultadoFromXML(String xmlString) {
+    public static Resultado resultadoFromXML(String xml) {
+        if (xml == null || xml.trim().isEmpty()) {
+            System.err.println("[XMLUtility] Error: XML vacío o nulo.");
+            return null;
+        }
+
         try {
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new StringReader(xmlString));
-            return elementToResultado(doc.getRootElement());
+            Document document = builder.build(new StringReader(xml));
+            return elementToResultado(document.getRootElement());
         } catch (Exception e) {
+            System.err.println("[XMLUtility] Error al parsear XML:");
             e.printStackTrace();
             return null;
         }
     }
 
+
     private static Element resultadoToElement(Resultado resultado) {
         Element resultadoElement = new Element("resultado");
         resultadoElement.addContent(new Element("exito").setText(String.valueOf(resultado.isExito())));
-        resultadoElement.addContent(new Element("mensaje").setText(resultado.getMensaje()));
-        resultadoElement.addContent(new Element("datos").setText(resultado.getDatos()));
+        resultadoElement.addContent(new Element("mensaje").setText(resultado.getMensaje() != null ? resultado.getMensaje() : ""));
+        resultadoElement.addContent(new Element("datos").setText(resultado.getDatos() != null ? resultado.getDatos() : ""));
         return resultadoElement;
     }
 

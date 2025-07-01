@@ -33,13 +33,13 @@ public class VentanaOperaciones extends JFrame {
         panelFondo.setLayout(null);
 
         JLabel lblTitulo = new JLabel("CALCULADORA", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Verdana", Font.BOLD, 26));
+        lblTitulo.setFont(new Font("Malgun Gothic", Font.BOLD, 26));
         lblTitulo.setForeground(Color.WHITE);
         lblTitulo.setBounds(0, 20, 900, 30);
         panelFondo.add(lblTitulo);
 
         JLabel lblSubtitulo = new JLabel("COMPUTACIONAL DISTRIBUIDA", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Verdana", Font.BOLD, 16));
+        lblSubtitulo.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
         lblSubtitulo.setForeground(Color.WHITE);
         lblSubtitulo.setBounds(0, 50, 900, 20);
         panelFondo.add(lblSubtitulo);
@@ -51,7 +51,7 @@ public class VentanaOperaciones extends JFrame {
         panelFondo.add(panelContenido);
 
         JLabel lblOperacion = new JLabel(tituloContenido);
-        lblOperacion.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblOperacion.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
         lblOperacion.setForeground(new Color(32, 35, 122));
         lblOperacion.setBounds(20, 10, 760, 25);
         panelContenido.add(lblOperacion);

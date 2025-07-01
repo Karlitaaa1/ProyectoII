@@ -4,10 +4,9 @@
  */
 package GUI;
 
-import Gestor.GestorConexion;
+import Domain.ControladorCliente;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  *
@@ -24,6 +23,7 @@ public class VentanaLogin extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         backgroundImage = new ImageIcon(getClass().getResource("/GUI/Fondo.png")).getImage();
+        System.out.println("CLIENTE: VentanaLogin abierta"); //QUITAR EN UN FUTURO, ES SOLO PRUEBA
 
         JPanel panelFondo = new JPanel() {
             @Override
@@ -35,68 +35,70 @@ public class VentanaLogin extends JFrame {
         panelFondo.setLayout(null);
 
         JLabel lblTitulo = new JLabel("CALCULADORA", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Verdana", Font.BOLD, 28));
+        lblTitulo.setFont(new Font("Malgun Gothic", Font.BOLD, 30));
         lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setBounds(0, 40, 900, 30);
+        lblTitulo.setBounds(0, 45, 900, 30);
         panelFondo.add(lblTitulo);
 
         JLabel lblSubtitulo = new JLabel("COMPUTACIONAL DISTRIBUIDA", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Verdana", Font.BOLD, 16));
+        lblSubtitulo.setFont(new Font("Malgun Gothic", Font.BOLD, 25));
         lblSubtitulo.setForeground(Color.WHITE);
-        lblSubtitulo.setBounds(0, 75, 900, 20);
+        lblSubtitulo.setBounds(0, 80, 900, 20);
         panelFondo.add(lblSubtitulo);
 
-        JPanel fondoLogin = new JPanel();
-        fondoLogin.setLayout(null);
-        fondoLogin.setBackground(Color.WHITE);
-        fondoLogin.setBounds(280, 150, 340, 220);
-        fondoLogin.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
-        panelFondo.add(fondoLogin);
+        JPanel panelFondoLogin = new JPanel();
+        panelFondoLogin.setLayout(null);
+        panelFondoLogin.setBackground(Color.WHITE);
+        panelFondoLogin.setBounds(280, 150, 340, 220);
+        panelFondo.add(panelFondoLogin);
 
         JLabel lblBienvenido = new JLabel("BIENVENIDO!", SwingConstants.CENTER);
-        lblBienvenido.setFont(new Font("Verdana", Font.BOLD, 20));
+        lblBienvenido.setFont(new Font("Malgun Gothic", Font.BOLD, 20));
         lblBienvenido.setForeground(new Color(32, 35, 122));
         lblBienvenido.setBounds(0, 20, 340, 30);
-        fondoLogin.add(lblBienvenido);
+        panelFondoLogin.add(lblBienvenido);
 
         JLabel lblUser = new JLabel("INGRESE SU ID O USERNAME:");
-        lblUser.setFont(new Font("Verdana", Font.PLAIN, 12));
+        lblUser.setFont(new Font("Malgun Gothic", Font.PLAIN, 15));
         lblUser.setBounds(30, 70, 280, 20);
-        fondoLogin.add(lblUser);
+        panelFondoLogin.add(lblUser);
 
         JTextField txtUser = new JTextField();
         txtUser.setBounds(30, 95, 280, 30);
-        fondoLogin.add(txtUser);
+        panelFondoLogin.add(txtUser);
 
         JButton btnIngresar = new JButton("INGRESAR");
         btnIngresar.setBackground(new Color(32, 35, 122));
         btnIngresar.setForeground(Color.WHITE);
         btnIngresar.setFocusPainted(false);
+        btnIngresar.setFont(new Font ("Malgun Gothic", Font.BOLD,15));
         btnIngresar.setBounds(110, 145, 120, 35);
-        fondoLogin.add(btnIngresar);
+        panelFondoLogin.add(btnIngresar);
 
         btnIngresar.addActionListener(e -> {
             String usuario = txtUser.getText().trim();
             if (!usuario.isEmpty()) {
                 try {
-                    // Crear y conectar gestor
-                    GestorConexion gestor = new GestorConexion("localhost", 9090);
-                    gestor.conectar();
-                    VentanaPrincipal ventana = new VentanaPrincipal(usuario, gestor); // Pasar el usuario y el gestor a la ventana principal
+                    ControladorCliente controlador = new ControladorCliente("localhost", 9090); // Se crea un solo controlador que se reutilizará
+                    // (Opcional) Puedes hacer un ping/handshake aquí para verificar la conexión antes de abrir la ventana principal.
+                    VentanaPrincipal ventana = new VentanaPrincipal(usuario, controlador); // Pasas el controlador
                     ventana.setVisible(true);
                     dispose();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "No se pudo conectar con el servidor.\n" + ex.getMessage(),
-                            "Error de conexion", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) { // Cambiado de IOException
+                    JOptionPane.showMessageDialog(this, "No se pudo conectar con el servidor.\n"
+                            + "Por favor, verifique que el servidor esté en línea.\n\n"
+                            + "Error: " + ex.getMessage(),
+                            "Error de Conexión", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
+                // Si el campo de usuario está vacío
                 JOptionPane.showMessageDialog(this, "Por favor, ingrese su ID o username.");
             }
         });
 
 
         JLabel lblProyecto = new JLabel("II PROYECTO PROGRAMACION 2025 | KARLA BRENES KEVIN BRENES", SwingConstants.RIGHT);
-        lblProyecto.setFont(new Font("Verdana", Font.PLAIN, 10));
+        lblProyecto.setFont(new Font("Malgun Gothic", Font.PLAIN, 10));
         lblProyecto.setForeground(Color.LIGHT_GRAY);
         lblProyecto.setBounds(420, 445, 450, 15);
         panelFondo.add(lblProyecto);
