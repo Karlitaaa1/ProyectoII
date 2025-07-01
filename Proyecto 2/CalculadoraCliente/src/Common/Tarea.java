@@ -15,6 +15,8 @@ public class Tarea implements Serializable { //Representa una tarea que un clien
     private Map<String, String> parametros;
     private Resultado resultado;
     private int id;
+    private String idTarea;
+    
 
     public Tarea() {
     }
@@ -31,4 +33,6 @@ public class Tarea implements Serializable { //Representa una tarea que un clien
     public void setResultado(Resultado resultado) {this.resultado = resultado;}
     public int getId() { return id;}
     public void setId(int id) { this.id = id; }
+    public String getIdTarea() { return idTarea; }
+    public void setIdTarea(String idTarea) { this.idTarea = idTarea; }
 }
